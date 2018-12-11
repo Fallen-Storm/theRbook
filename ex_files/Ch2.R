@@ -210,3 +210,29 @@ attributes(x)
 class(x)
 mode(x)
 
+rep( c("cat", "dog", "gerbil", "goldfish", "rat"), c(2, 3, 2, 1, 3))
+
+gl(4, 3) # = generte levels in the form (upto), (with repeats of), (to total length)
+gl(4, 3, 24) # total lenght of 24 in this instance repeats twice
+
+temp <- gl(2, 2, 24, labels = c("Low", "High"))
+soft <- gl(3, 8, 24, labels = c("Hard", "Medium", "Soft"))
+M.user <- gl(2, 4, 24, labels = c("N", "Y"))
+brand <- gl(2, 1, 24, labels = c("X", "M"))
+
+data.frame(temp, soft, M.user, brand)
+
+
+
+# 2.4 Membership: Testing and coercing in R ------------------------------------------------------
+
+# Membership is the calss of object in R, coersion is changing that class
+
+lv <- c(TRUE, FALSE, TRUE)
+is.logical(lv)
+levels(lv)
+(fv <- as.factor(lv))
+is.factor(fv)
+(nv <- as.numeric(lv))
+ 
+

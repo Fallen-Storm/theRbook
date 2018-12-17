@@ -234,5 +234,78 @@ levels(lv)
 (fv <- as.factor(lv))
 is.factor(fv)
 (nv <- as.numeric(lv))
+as.numeric( factor( c("a", "b", "c")))
+as.numeric( c("a", "b", "c"))
+
+# 2.5 misisng values, infinity and things that are not numbers ----------------------------------
+
+y <- c(4, NA, 7)
+y == NA # doesnt work
+y == "NA" # doesnt work
+is.na(y)
+y[! is.na(y)] # This strips the missing value (NA) from the factor
+
+y1 <- c(1, 2, 3, NA)
+y2 <- c(5, 6, NA, 8)
+y3 <- c(9, NA, 11, 12)
+y4 <- c(NA, 14, 15, 16)
+
+full.frame <- data.frame(y1, y2, y3, y4)
+
+reduced.frame <- full.frame[! is.na(full.frame$y1),] # generates a new data frame excluding NA for y1
+
+reduced.frame
+
+x <- c(1:8, NA)
+mean(x) # = 0 - to get the mean of NA values have to remove the NAs
+
+mean(x, na.rm = T) # NA does not work in the
  
+vmv <- c(1:6, NA, NA, 9:12)
+vmv
+
+seq(along = vmv) [is.na(vmv)] # index of missing values
+which(is.na(vmv))
+
+zero.vmv <- vmv
+zero.vmv
+
+zero.vmv[is.na(zero.vmv)] <- 0
+zero.vmv
+
+ifelse(is.na(zero.vmv), 0, zero.vmv) # same as above - ifelse(test, yes, no)
+
+?ifelse
+
+# 2.6 Vectors and subscripts ----------------------------------------
+
+#vector is a variable with one or more values of the same type
+peas <- c(4, 7, 6, 5, 6, 7)
+class(peas) # = numeric
+length(peas) # = 6
+mean(peas)
+max(peas)
+min(peas)
+quantile(peas)
+peas <- scan()
+peas
+
+# subscripts invole using [ ] 
+peas
+peas[4]
+pods <- c(2, 3, 6)
+peas[pods] # this uses the value in pods as the subscript to interegate peas i.e vector position 2, 3 and 6
+peas
+peas[-1] # removes value 1
+peas[-length(peas)] # removes the last value
+
+trim <- function(x) sort(x) [-c(1, 2, length(x) -1, length(x))] # sorts the vector, then removes the smallest two
+                                                                # values then the largest 2 values
+trim(peas)
+
+peas[1:3]
+peas[seq (2, length(peas), 2)]
+peas[1:length(peas) %% 2 == 0]
+
+
 

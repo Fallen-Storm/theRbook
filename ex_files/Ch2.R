@@ -312,3 +312,4 @@ names(counts) <- 0:8 # if bracketed wrong, counts becomes 0 : 8
 counts
 
 st <- table(rpois(2000, 2))
+

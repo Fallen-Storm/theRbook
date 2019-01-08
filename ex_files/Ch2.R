@@ -279,7 +279,7 @@ ifelse(is.na(zero.vmv), 0, zero.vmv) # same as above - ifelse(test, yes, no)
 
 # 2.6 Vectors and subscripts ----------------------------------------
 
-#vector is a variable with one or more values of the same type
+# vector is a variable with one or more values of the same type
 peas <- c(4, 7, 6, 5, 6, 7)
 class(peas) # = numeric
 length(peas) # = 6
@@ -307,5 +307,8 @@ peas[1:3]
 peas[seq (2, length(peas), 2)]
 peas[1:length(peas) %% 2 == 0]
 
+counts <- c(25, 12, 7, 4, 6, 2, 1, 0, 2)
+names(counts) <- 0:8 # if bracketed wrong, counts becomes 0 : 8
+counts
 
-
+st <- table(rpois(2000, 2))

@@ -312,4 +312,27 @@ names(counts) <- 0:8 # if bracketed wrong, counts becomes 0 : 8
 counts
 
 st <- table(rpois(2000, 2))
+as.vector(st)
 
+x <- 0:10
+sum(x) # sum of the all the element in the vector = 55
+sum(x < 5) # counts the cases that are greater than 5 = 5
+# this is due ot coercion - allowing the TRUE to be coerced in to neumerical 1
+
+sum(x [x < 5]) # finds the sum of all values less than 5 = 10 (0 + 1 + 2 + 3 + 4)
+
+# how do we add the values of the three largest value in a vector?
+y <- c(8, 3, 5, 7, 6, 6, 8, 9, 2, 3, 9, 4, 10, 4, 11)
+sort(y)
+rev(sort(y))
+sum(rev(sort(y)) [1:3]) # = 30
+# this method doesnt alter y in any way or make any intermediate vectors
+
+x <- c(2, 3, 4, 1, 5, 8, 2, 3, 7, 5, 7) # vector indices for the postition 
+which (x == max(x))
+which (x ==  min(x))
+
+which.max(x)
+which.min(x)
+
+# 2.7 Vector Functions ---------------------------------------------------

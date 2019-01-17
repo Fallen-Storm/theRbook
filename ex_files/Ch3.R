@@ -1,15 +1,17 @@
-<<<<<<< HEAD
 # Chapter 3 Setup and Functions ------------------------------------------------
 
 
 # good practise to have all data file for a project in the same relative folder, that way the script can be used by
 # anyone aslong as the files are in the same project folder
 
-setwd("F:/Projects/systemsbio/R/theRbook/")
+setwd("F://Projects//systemsbio//R//theRbook//")
 
 rt <- function(x) read.table( paste( "data_files//",x,".txt", sep = ""), header = T)
-# read.table function in the format rt("file_name") to impoert .txt file as dataframe
+# read.table function in the format rt("file_name") to import .txt file as dataframe
 
+#FOR WINDOWS ONLY
+
+// <- \ 
 
 
 getwd()
@@ -83,5 +85,30 @@ sapply(1:5, function(i) # returns a vector same lenght as 'x' each element appli
                 [(4 * i - 3) : (4*i)] # ... 
               )))
 
+# 3.4 Reading data from a file using readLines ------------------------------------
 
+lines <- readLines("data_files//worms.txt")
+lines # each line has become a single character string - must strip out \t
 
+db <- strsplit(lines,"\t") # removes tabs and seperates onto new lines
+db
+
+bb <- unlist(db)
+bb
+data.class('bb') # charcter class
+str(bb)
+
+dim(bb) <- c(7,21) # 'dim' shows diminetions to object
+t(bb) [-1, ] # transpose vector and drop 1st row as this contains header
+
+bb_frame <- as.data.frame(t (bb)[-1, ]) # bb becomes data frame -header
+head(bb_frame)
+names(bb_frame) <- t(bb)[1, ] # gets headers names from transposed line 1 of bb
+head(bb_frame)
+
+readLines("data_files//rt.txt")
+strsplit(readLines("data_files//rt.txt"), "\t")
+rows <- lapply( strsplit( readLines("data_files//rt.txt"), "\t"), as.numeric)
+rows
+
+sapply( 1:5, function(i) as.numeric( na.omit (rows[[i]])))

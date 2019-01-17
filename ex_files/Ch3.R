@@ -1,21 +1,20 @@
 # Chapter 3 Setup and Functions ------------------------------------------------
 
+  # For Windows
+
+setwd("F://Projects//systemsbio//R//theRbook//")
+
+  # For MacbookPro
+
+setwd("~//Documents//systemsbio/R/theRbook//")
 
 # good practise to have all data file for a project in the same relative folder, that way the script can be used by
 # anyone aslong as the files are in the same project folder
 
-setwd("F://Projects//systemsbio//R//theRbook//")
 
 rt <- function(x) read.table( paste( "data_files//",x,".txt", sep = ""), header = T)
 # read.table function in the format rt("file_name") to import .txt file as dataframe
 
-#FOR WINDOWS ONLY
-
-// <- \ 
-
-
-getwd()
-list
 
 # 3.1 Data input for the keyboard ------------------------------------
 
@@ -26,10 +25,10 @@ x <- scan() # input individual numbers in to vector in console
 
 dir("F://")
 
-data <- read.table( file.choose(), header = T)
+data <- read.table( file.choose(), header = TRUE)
 head(data)
 
-data <- read.table('yield.txt', header = T)
+data <- read.table('yield.txt', header = TRUE)
 head(data)
 
 data <- read.delim('yield.txt')
@@ -56,7 +55,7 @@ head(data2)
 
 rt("rt") # error de to diffent lines contianing differnt numbers of fields
 
-# scan will work better wiht untidy dataframe such as this - but you will wish to skip the header row as this contains
+# scan will work better with untidy dataframe such as this - but you will wish to skip the header row as this contains
 # names not data with (skip = 1)
 # if data is spread across multiple lines use multi.line = TRUE
 
@@ -71,13 +70,14 @@ scan("data_files//rt.txt", sep = "\n") # 5 item using a new line as a seperator
 scan("data_files//rt.txt", sep = "\t") # 20 item using tab sep
 
 # to calculate the number of lines 20/5= 4
+View(data_files//rt.txt)
 
 scan("data_files//rt.txt", sep = "\t") [1:4] # 138 NA NA NA
-as.numeric( na.omit (scan("data_files//rt.txt", sep = "\t", quiet = T) [1:4])) # signifies the data as numeric, omits the
+as.numeric( na.omit ( scan("data_files//rt.txt", sep = "\t", quiet = T) [1:4])) # signifies the data as numeric, omits the
 # na and remove th e'READ 20 FILES' use quiet = t
 
 
-# but ultimately what we need is a list of vectors of variable lentghts 1, 2, 4, 2 and 1
+# but ultimately what we need is a list of vectors of variable lenghts 1, 2, 4, 2 and 1
 
 sapply(1:5, function(i) # returns a vector same lenght as 'x' each element applied to fuction
               as.numeric(na.omit( # ... removes NA leaving only numbeical values ...
@@ -108,7 +108,32 @@ head(bb_frame)
 
 readLines("data_files//rt.txt")
 strsplit(readLines("data_files//rt.txt"), "\t")
-rows <- lapply( strsplit( readLines("data_files//rt.txt"), "\t"), as.numeric)
+rows <- lapply( 
+  strsplit( 
+    readLines("data_files//rt.txt"), "\t"), as.numeric)
 rows
 
 sapply( 1:5, function(i) as.numeric( na.omit (rows[[i]])))
+
+# 3.5 Warnings when you attach a dataframe --------------------------------
+
+help(attach)
+
+murder <- read.table("data_files//murders.txt", header = TRUE, as.is = 'region')
+murder <- rt("murders")
+head(murder)
+
+attach(murder) # object is masked by .GlobalEnv
+
+# attach function makes the variables in th etable accessable/ searchable by name
+
+murders <- murder
+rm(murder)
+attach(murders)
+table(region) # if dataframe not attached murder¢region
+detach()
+table(region)
+
+
+
+

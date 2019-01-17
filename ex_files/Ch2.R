@@ -1,6 +1,6 @@
 # Introduction -------------------------------------------------------
 # This is an annoataion
-setwd("~/Documents/systemsbio/R/theRbook/data_files")
+setwd("F:/Projects/systemsbio/R/theRbook/data_files")
 # Folder that contains sample data .txt files 
 
 # 2.1 Calculations -------------------------------------------------

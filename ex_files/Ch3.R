@@ -1,10 +1,9 @@
-# Chapter 3 Setup and Functions ------------------------------------------------
-
-  # For Windows
+# Chapter 3 Setup ------------------------------------------------
+# For Windows
 
 setwd("F://Projects//systemsbio//R//theRbook//")
 
-  # For MacbookPro
+# For MacbookPro
 
 setwd("~//Documents//systemsbio/R/theRbook//")
 
@@ -12,8 +11,36 @@ setwd("~//Documents//systemsbio/R/theRbook//")
 # anyone aslong as the files are in the same project folder
 
 
+# Install --------------------------------------------------------------------------
+
+install.packages(c("readxl", "rlang", "tibble"))
+install.packages("tidyverse")
+
+# Package Library ------------------------------------------------------------------
+
+library("brew")
+library("tidyverse")
+tidyverse_update()
+
+# Functions ------------------------------------------------------------------------
+
 rt <- function(x) read.table( paste( "data_files//",x,".txt", sep = ""), header = T)
 # read.table function in the format rt("file_name") to import .txt file as dataframe
+
+SEM <- function(x) sqrt(var(x) / length(x))
+# defines standard error of the mean
+
+closest <- function(any_vec, spec_val){
+  any_vec[which( abs(any_vec - spec_val) == min (abs(any_vec - spec_val)))]
+} # returns the closet value to a specificed value (sv) in any vector(xv) 
+
+
+run.and.value <- function(x) {
+  a <- max( rle(poisson) [[1]])
+  b <- rle(poisson) [[2]] [which( rle(poisson)[[1]] == a)]
+  cat("length = ",a," value = ",b, "\n")
+} # return the number of runs and their numerical value from a give vector
+
 
 
 # 3.1 Data input for the keyboard ------------------------------------

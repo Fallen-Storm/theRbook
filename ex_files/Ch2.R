@@ -1,7 +1,47 @@
-# Introduction -------------------------------------------------------
-# This is an annoataion
-setwd("F:/Projects/systemsbio/R/theRbook/data_files")
-# Folder that contains sample data .txt files 
+# Chapter 2 Setup ------------------------------------------------
+# For Windows
+
+setwd("F://Projects//systemsbio//R//theRbook//")
+
+# For MacbookPro
+
+setwd("~//Documents//systemsbio/R/theRbook//")
+
+# good practise to have all data file for a project in the same relative folder, that way the script can be used by
+# anyone aslong as the files are in the same project folder
+
+
+# Install --------------------------------------------------------------------------
+
+install.packages(c("readxl", "rlang", "tibble"))
+install.packages("tidyverse")
+
+# Package Library ------------------------------------------------------------------
+
+library("brew")
+library("tidyverse")
+tidyverse_update()
+
+# Functions ------------------------------------------------------------------------
+
+rt <- function(x) read.table( paste( "data_files//",x,".txt", sep = ""), header = T)
+# read.table function in the format rt("file_name") to import .txt file as dataframe
+
+SEM <- function(x) sqrt(var(x) / length(x))
+# defines standard error of the mean
+
+closest <- function(any_vec, spec_val){
+  any_vec[which( abs(any_vec - spec_val) == min (abs(any_vec - spec_val)))]
+} # returns the closet value to a specificed value (sv) in any vector(xv) 
+
+
+run.and.value <- function(x) {
+  a <- max( rle(poisson) [[1]])
+  b <- rle(poisson) [[2]] [which( rle(poisson)[[1]] == a)]
+  cat("length = ",a," value = ",b, "\n")
+} # return the number of runs and their numerical value from a give vector
+
+
 
 # 2.1 Calculations -------------------------------------------------
 log(42/7.3)
@@ -329,10 +369,180 @@ sum(rev(sort(y)) [1:3]) # = 30
 # this method doesnt alter y in any way or make any intermediate vectors
 
 x <- c(2, 3, 4, 1, 5, 8, 2, 3, 7, 5, 7) # vector indices for the postition 
-which (x == max(x))
-which (x ==  min(x))
+which(x == max(x))
+which(x ==  min(x))
 
 which.max(x)
 which.min(x)
 
 # 2.7 Vector Functions ---------------------------------------------------
+ 
+y <- c(8, 3, 5, 7, 6, 6, 8, 9, 2, 3, 9, 4, 10, 4, 11)
+mean(y) # power of R is to evaulate fuctions over entire vectors
+
+# a list of vector functions Table 2.4 page 41 (p63 pdf)
+
+range(y)
+fivenum(y) # Tukeys 5 number summery - min, lower hinge, median, upper hinge, max
+
+counts <- rnbinom(10000, mu = 0.92, size = 1.1) # generation of 10K random integers from
+                                                # negative binominal distribution
+
+counts[1:30] # the question is; how may 0s, 1s, etc to the largest in the whole vector ?
+table(counts)
+
+data <- rt("taxa")
+attach(data)
+names(data)
+tapply(Petals, Fruit, mean)
+tapply(Petals, Fruit, var)
+tapply(Petals, Fruit, min)
+tapply(Petals, Sepal, function(x) sqrt(var(x) / length(x)))
+SEM <- function(x) sqrt(var(x) / length(x))
+
+tapply(Petals, Sepal, SEM)       
+
+SEM(Petals)
+
+# tapply can also be used to porduce a mulit-dimentional table by replacing one catagorical
+# variable by a list pg categroical variable e.g
+# tapply(temperature, list(yr, month), mean [ , 1:6]) both yr and month are names in
+# temperature.txt file and [ , 1:6] restrict to 1st 6 months
+
+# tapply will produce NA for fuctions with built-in protection against missing values
+# the mean fuction will not return missing values;
+# use tapply(temperature, yr, mean, na.rm = TRUE)
+
+# to trim extreme values (outliers) use the 'trim option and specifiy the fraction of the 
+# data you wish to omit (between 0 and 0.5) form the left and right tails;
+# tapply(temperature, yr, mean, trim = 0.2)
+
+agg_data <- rt("daphnia")
+names(agg_data) # no pH data in data frame compared to example
+
+# in the example below (modified) we have 2 continuous variable (Growth.rate and Daphnia)
+# and 2 caregorical explanatory variables (Water and Detergent)
+
+
+aggregate(Growth.rate ~ Water, agg_data, mean) # use of 1 to 1 aggrate
+aggregate(Growth.rate ~ Water + Detergent, agg_data, mean) # use of 1 to many
+aggregate(cbind (Growth.rate, Daphnia) ~ Water + Detergent, agg_data, mean) # many to many
+
+# pmin and pmax functions take multiple vectors of the same lenght and calculates the 
+# min or max of each and generates a new vector with those values
+
+x <- c(1:5)
+y <- c(4:8)
+z <- c(3:7)
+
+pmin(x, y, z) # = 1, 2, 3, 4, 5
+pmax(x, y, z) # = 4, 5, 6, 7, 8
+
+
+sum_data <- agg_data
+  rm(agg_data)
+
+names(sum_data)
+tapply(sum_data$Growth.rate, sum_data$Detergent, mean) # without use of 'attach'
+tapply(sum_data$Growth.rate, list(sum_data$Water, sum_data$Daphnia), median)
+
+
+y <- c(8, 3, 5, 7, 6, 6, 8, 9, 2, 3, 9, 4, 10, 11)
+which(y > 5) # which vaules in y are bigger than 5 as a list of subscripts
+y[y > 5] # lists the values bigger than 5 in y
+
+length(y) # =  14
+length( y[y > 5]) # = 9
+
+xv <- rnorm(1000, 100, 10) # 1000 random numbers with the mean 100 and SD of 10
+which( abs(xv - 108) == min (abs(xv - 108))) # closest value ot 108 is in location 867
+xv[867] # = 108.003
+
+closest <- function(xvec, sval){
+  xvec[which( abs(xvec - sval) == min (abs(xvec - sval)))]
+}
+# returns the closet value to a specificed value (sv) in any vector(xv)
+closest(xv, 108)
+
+houses <- read.table("data_files//houses.txt", header = TRUE)
+names(houses)        
+
+ranks <- rank(houses$Price)
+sorted <- sort(houses$Price)
+ordered <- order(houses$Price)
+
+view <- data.frame(houses$Price, ranks, sorted, ordered)
+view
+
+file.edit("data_files//houses.txt")
+houses$Location[order(houses$Price)]
+houses$Location[rev( order(houses$Price))]
+
+search()
+detach()
+
+(poisson <- rpois(150, 0.7))
+rle(poisson) # run length encoding asks how may of on number is duplicated untill the next
+max( rle(poisson) [[1]]) # finds the longest run on numbers = 6
+which( rle(poisson) [[1]] == 6)
+rle (poisson) [[2]] [c(58, 50)]
+
+run.and.value <- function(x) {
+  a <- max( rle(poisson) [[1]])
+  b <- rle(poisson) [[2]] [which( rle(poisson)[[1]] == a)]
+  cat("length = ",a," value = ",b, "\n")
+} # return the number of runs and their numerical value from a give vector fun = 'x'
+run.and.value(poisson)
+
+setA <- c("a", "b", "c", "d", "e")
+setB <- c("d", "e", "f", "g")
+
+union(setA, setB) # add the two together but only unique
+intersect(setA, setB) # shows the material they have in common
+
+setdiff(setA, setB) # = a, b, c
+setdiff(setB, setA) # = f , g
+
+setA %in% setB # = F F F T T
+setB %in% setA # = T T F F
+
+
+
+
+# 2.8 Matrices and arrays -------------------------------------------------------------
+
+y <- 1:24
+dim(y) <- c(2,3,4) # gneration of a 3D array of 1 to 24 2 x 4 x 3
+y
+dim(y) <- c(3, 2, 4)
+y
+
+# a matris is a 2D array on numbers. In a sbscript [5, 3] the first number refers to the
+# row (rows are defined as margin number 1) and the second as the coloumn (2nd margin)
+# thefore [ , 4] means all the rows in coloumn 4 of an object
+# and [2, ] means all the coloumns in row 2
+
+x <- matrix( c(1, 0, 0, 0, 1, 0, 0, 0, 1), nrow = 3) # by default the num entered by coloumn
+x
+class(x) # = matrix
+attributes(x) # = dim 3 3
+
+vector <- c(1, 2, 3, 4, 4, 3, 2, 1)
+V <- matrix(vector, byrow = TRUE, nrow = 2) # data enters row-wise not by column
+V
+
+# if using the dim FUN;
+
+dim(vector) <- c(4, 2)
+is.matrix(vector)
+vector 
+vector <- t(vector) # need to transpose to get data entered per row
+vector
+
+x <- matrix( rpois(20, 1.5), nrow = 4)
+x
+
+rownames(x) <- rownames(x, do.NULL = FALSE, prefix = "Trail.")
+x
+
+

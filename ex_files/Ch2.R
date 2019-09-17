@@ -271,9 +271,9 @@ data.frame(temp, soft, M.user, brand)
 lv <- c(TRUE, FALSE, TRUE)
 is.logical(lv)
 levels(lv)
-(fv <- as.factor(lv))
+fv <- as.factor(lv)
 is.factor(fv)
-(nv <- as.numeric(lv))
+nv <- as.numeric(lv)
 as.numeric( factor( c("a", "b", "c")))
 as.numeric( c("a", "b", "c"))
 
@@ -542,7 +542,184 @@ vector
 x <- matrix( rpois(20, 1.5), nrow = 4)
 x
 
-rownames(x) <- rownames(x, do.NULL = FALSE, prefix = "Trail.")
+rownames(x) <- rownames(x, do.NULL = FALSE, prefix = "Trial.")
 x
+
+drug.names <- c("arpirin", "paracetamol", "nurofen", "hedex", "placebo")
+colnames(x) <- drug.names
+x
+
+# you can use dimnames to give names to all the rows and/or columns
+#  the argument of dimnames has to be a lsit (ros first, columns second)
+# with the elements being exactly the correct length
+
+dimnames(x) <- list (NULL, paste0("drug.", 1:5, sep = ""))
+x
+
+help("paste0")
+
+mean(x[ , 5])
+var(x[4, ])
+rowSums(x)
+colSums(x)
+rowMeans(x)
+colMeans(x)
+apply(x, 2, mean)
+help("apply")
+
+# to only sum/mean grups of columns/rows use rowsum (No Caps)
+
+group <- c("A", "B", "B", "A") # groups rows 1+4 and 2+3 in to A dn B respecrively
+rowsum(x, group)
+
+tapply(x, list(group[row(x)], col(x)), sum)
+aggregate(x, list(group), sum)
+
+apply(x, 2, sample) # shuffles the samples in a matrix
+# in apply, the second element denotes the margin (1 for row, 2 for column)
+
+# we have been aske to add a row at the bottom shoing column means
+# and a column to the right showinf row variances
+
+x <- rbind(x, apply(x, 2, mean))
+x <- cbind(x, apply(x, 1, var))
+x
+
+View(x)
+
+colnames(x) <- c(1:5, "Variance")
+rownames(x) <- c(1:4, "Mean")
+View(x)
+
+rowmatrix <- mat[2, , drop = FALSE]
+
+# the *sweep* function used to 'sweepout' summaris fo vectors/matrices/arrays/dataframes
+
+matdata <- read.table(file.choose())
+
+cols <- apply(matdata, 2, mean)
+cols
+sweep(matdata, 2, cols)
+
+# you can replicate sweep by doing to long hand calcs
+
+col.mean <- matrix(rep(cols, rep(10, 4)), nrow = 10)
+col.mean
+
+matdata - col.mean
+
+(x <- matrix(1:24, nrow = 4)) # placing total in parenthesise causes the values to be printed
+
+apply(x, 1, sum)
+apply(x, 2, sum)
+apply(x, 1, sqrt) # apply to individual vaules
+apply(x, 2, sqrt) # margin only dictaes the shape of the data
+
+apply(x, 1, sample)
+
+# you can supply your own function definition also
+apply(x, 1, function(y) y^ 2+y) # NB 'y' does not matter just consistent
+
+# to apply a function across a vector use sapply
+sapply (3:7, seq) # generates group of seqs from 1:3 to 1:7
+
+# the following contain data of deay of radioactive emission over a 50-day period
+# we will ise non-linear least square to estimate the decay rate 'a' in 'y = exp(-ax)'
+sapdecay <- read.table("./data_files/sapdecay.txt", header = TRUE)
+View(sapdecay)
+names(sapdecay)
+attach(sapdecay)
+# the R book here uses attach - this should never be used, and is expained later
+
+# we need to write a function that sums the squares fot he dofferences observed (y)
+# and predicted (yf) values fo y, when provided with a specific value of the parameter a
+
+sumsq <- function(a, xv = x, yv = y){
+          yf <- exp(-a*xv)
+          sum((yv-yf)^2)
+        }
+
+lm(log(y)~ x)
+a <- seq(0.01, 0.2, .005)
+a
+plot(a, sapply(a, sumsq), type = 'l')
+a[min( sapply(a, sumsq)) == sapply(a, sumsq)]
+
+plot(x, y)
+xv <- seq(0, 50, 0.1)
+lines(xv, exp(-0.055*xv))
+
+# tihs can be streamlines witht he optimise fuction
+
+fa <- function(a){
+        sum((y - exp(-a*x)) ^2)  
+      }
+optimise(fa, c(0.01, 0.1))
+
+fb <- function(a){
+      sum( abs(y - exp(-a*x)))
+      }
+optimise(fb, c(0.01, 0.1))
+
+
+# we are tasked to calculate the number of plots a species is dominant in the Park Gras dataframe
+# this invloes scanning each row of a matrix and reporting the coloum number that contain the max
+
+data <- read.table("./data_files/pgfull.txt", header = TRUE)
+attach(data)
+names(data)
+View(data)
+
+# species names are reperesent by a 2-letter code. We define the dominent species as the one with
+# largest biomass in a plot. 
+
+# 1. create a data.frame containing only species abundances
+# NB the first 54 colomns contain species abundance
+
+species <- data[,1:54]
+max.col(species) # scan all rows, and returns the col number that returns the max biomass
+
+# we can use what max.col(species) returns as the index for (names)
+(names(species)[max.col(species)]) 
+dom.species <- table(names(species)[max.col(species)]) # total number of plots species are dominant
+length(dom.species) # total number of species dominant on one or more plot
+
+length(names(species)) - length(dom.species) # number of species in the system that never acheive dominance
+
+# reordering a multidimemtioanl array using aperm
+
+# we have data in an array with 3 dimentions - 2 sexes, 3 ages and 4 income groups
+# for ease these will be represent by the number 1 - 24
+data <- array(1:24, 2:4)
+View(data)
+
+data.2 <- array(1:24, 2:4)
+data.2
+help(array)
+# this generates 4 sub-tables, each with 3 columns and 2 rows
+
+dimnames(data)[[1]] <- list("male", "female")
+dimnames(data)[[2]] <- list("young", "mid", "old")
+dimnames(data)[[3]] <- list("A", "B", "C", "D")
+
+data
+
+# what if you now want the four income groupd to be the columrs, with the subtables the gender
+
+new.data <- aperm(data, c(2, 3, 1)) # order = row, column, subtable
+new.data
+
+help(lm)
+help(table)
+
+
+# 2.9 Random numbers, sampling and shuffling --------------
+
+
+
+
+
+
+
 
 
